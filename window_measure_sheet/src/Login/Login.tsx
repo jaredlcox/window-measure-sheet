@@ -19,7 +19,7 @@ const Login: React.FC = () => {
 
       {/* Login Form */}
       <div className="bg-white p-8 rounded-lg shadow-lg z-10">
-        <img src="/wmsLogo.png" alt="WMS Logo" className='w-[300px] sm:w-auto -mb-10 -mt-14 sm:-mb-14' />
+        {/* <img src="/wmsLogo.png" alt="WMS Logo" className='w-[300px] sm:w-auto -mb-10 -mt-14 sm:-mb-14' /> */}
         <h2 className="text-2xl font-bold mb-10">Login</h2>
 
         <form>
