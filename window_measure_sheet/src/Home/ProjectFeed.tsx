@@ -1,8 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const ProjectFeed: React.FC = () => {
+const ProjectFeed: React.FC  = ({}) => {
+  const navigate = useNavigate();
+
+  const handleCreateProjectClick = () => {
+    navigate('/projects/new');
+  };
   return (
-    <div className="h-[4000px]">
+    <div className="h-[4000px] p-4 md:p-10">
       {/* header container */}
       <div className="flex justify-between items-center">
         <div className="flex space-x-4 flex-col md:flex-row">
@@ -24,8 +30,11 @@ const ProjectFeed: React.FC = () => {
             </svg>
           </label>
         </div>
-        <button className="btn btn-primary text-white rounded-md md:w-auto">
-        <svg
+        <button
+          className="btn btn-primary text-white rounded-md md:w-auto"
+          onClick={handleCreateProjectClick} // Use the passed down function
+        >
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             className="cursor-pointer w-6 rounded-full"

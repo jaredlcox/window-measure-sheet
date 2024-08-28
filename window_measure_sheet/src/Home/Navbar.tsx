@@ -1,13 +1,24 @@
 import React, { useState } from "react";
 import Avatar from "./Avatar";
-import ProjectFeed from "./ProjectFeed";
+import { Link, useNavigate, RouteProps } from "react-router-dom";
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  children: React.ReactNode;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const navigate = useNavigate();
+
+  // Pass down the handleCreateProjectClick to the appropriate child components
+  const clonedChildren = React.Children.map(children, (child) => {
+    return child;
+  });
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
@@ -18,6 +29,7 @@ const Navbar: React.FC = () => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             className="cursor-pointer w-8 rounded-full"
+            onClick={() => navigate("/projects/new")}
           >
             <path
               fill="currentColor"
@@ -29,8 +41,8 @@ const Navbar: React.FC = () => {
 
         <h1 className="text-md font-bold text-left">Window Measure Sheet</h1>
         <nav className="">
-          <a
-            href="/projects"
+          <Link
+            to="/projects"
             className="flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left"
           >
             <svg
@@ -46,9 +58,9 @@ const Navbar: React.FC = () => {
               ></path>
             </svg>
             Projects
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="/materials"
             className="flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left"
           >
             <svg
@@ -76,9 +88,9 @@ const Navbar: React.FC = () => {
               <path fill="none" d="M0 0h36v36H0z"></path>
             </svg>
             Materials
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="/map"
             className="flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left"
           >
             <svg
@@ -94,7 +106,7 @@ const Navbar: React.FC = () => {
               ></path>
             </svg>
             Map
-          </a>
+          </Link>
         </nav>
       </div>
 
@@ -149,34 +161,35 @@ const Navbar: React.FC = () => {
             </svg>
           </button>
           <nav className="space-y-6">
-            <a
-              href="#"
+            <Link
+              to="/projects"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
               onClick={toggleMenu}
             >
               Projects
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="/materials"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
               onClick={toggleMenu}
             >
               Materials
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="/map"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
               onClick={toggleMenu}
             >
               Map
-            </a>
+            </Link>
           </nav>
         </div>
       </div>
 
       {/* Content Area */}
-      <div className="text-2xl font-bold mt-[4rem] md:mt-0 h-[4000px] md:ml-64 p-4 md:p-10 w-full">
-        <ProjectFeed />
+      <div className="text-2xl font-bold mt-[4rem] md:mt-0 h-[4000px] md:ml-64 w-full">
+        {/* Pass the cloned children */}
+        {clonedChildren}
       </div>
     </div>
   );
