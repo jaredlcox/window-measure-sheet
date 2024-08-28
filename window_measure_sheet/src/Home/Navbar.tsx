@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
         <h1 className="text-md font-bold text-left">Window Measure Sheet</h1>
         <nav className="">
           <a
-            href="#"
+            href="/projects"
             className="flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left"
           >
             <svg
@@ -175,7 +175,7 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Content Area */}
-      <div className="text-2xl font-bold mt-[4rem] md:mt-0 h-[4000px] md:ml-64 p-10 w-full">
+      <div className="text-2xl font-bold mt-[4rem] md:mt-0 h-[4000px] md:ml-64 p-4 md:p-10 w-full">
         <ProjectFeed />
       </div>
     </div>
