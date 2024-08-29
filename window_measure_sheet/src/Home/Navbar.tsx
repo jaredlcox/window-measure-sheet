@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Avatar from "./Avatar";
-import { Link, useNavigate, RouteProps } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -14,6 +14,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
   };
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Pass down the handleCreateProjectClick to the appropriate child components
   const clonedChildren = React.Children.map(children, (child) => {
@@ -43,8 +44,13 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
         <nav className="">
           <Link
             to="/projects"
-            className="flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left"
+            className={`flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left relative ${
+              location.pathname === "/projects" ? "bg-gray-700" : ""
+            }`}
           >
+            {location.pathname === "/projects" && (
+              <div className="absolute left-0 w-1 h-full bg-[#57A9AE]"></div>
+            )}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
@@ -61,48 +67,46 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           </Link>
           <Link
             to="/materials"
-            className="flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left"
+            className={`flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left relative ${
+              location.pathname === "/materials" ? "bg-gray-700" : ""
+            }`}
           >
+            {location.pathname === "/materials" && (
+              <div className="absolute left-0 w-1 h-full bg-[#57A9AE]"></div>
+            )}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
               height="1em"
-              viewBox="0 0 36 36"
+              viewBox="0 0 24 24"
               className="mr-2"
             >
               <path
                 fill="currentColor"
-                d="M16.4 15.4h3.2v5.2h-3.2z"
-                className="clr-i-solid clr-i-solid-path-1"
+                d="M12 15c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4M8 9a4 4 0 0 0 4 4a4 4 0 0 0 4-4m-4.5-7c-.3 0-.5.21-.5.5v3h-1V3s-2.25.86-2.25 3.75c0 0-.75.14-.75 1.25h10c-.05-1.11-.75-1.25-.75-1.25C16.25 3.86 14 3 14 3v2.5h-1v-3c0-.29-.19-.5-.5-.5z"
               ></path>
-              <path
-                fill="currentColor"
-                d="M21 21a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-2H2v9a2 2 0 0 0 2 2h28a2 2 0 0 0 2-2v-9H21Z"
-                className="clr-i-solid clr-i-solid-path-2"
-              ></path>
-              <path
-                fill="currentColor"
-                d="m33.71 12.38l-4.09-4.09a1 1 0 0 0-.7-.29h-5V6.05A2 2 0 0 0 22 4h-8.16A1.92 1.92 0 0 0 12 6.05V8H7.08a1 1 0 0 0-.71.29l-4.08 4.09a1 1 0 0 0-.29.71V17h13v-2a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2h13v-3.92a1 1 0 0 0-.29-.7M22 8h-8V6h8Z"
-                className="clr-i-solid clr-i-solid-path-3"
-              ></path>
-              <path fill="none" d="M0 0h36v36H0z"></path>
             </svg>
             Materials
           </Link>
           <Link
             to="/map"
-            className="flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left"
+            className={`flex items-center py-2.5 px-2 rounded transition duration-200 hover:bg-gray-700 text-left relative ${
+              location.pathname === "/map" ? "bg-gray-700" : ""
+            }`}
           >
+            {location.pathname === "/map" && (
+              <div className="absolute left-0 w-1 h-full bg-[#57A9AE]"></div>
+            )}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
               height="1em"
-              viewBox="0 0 256 256"
+              viewBox="0 0 24 24"
               className="mr-2"
             >
               <path
                 fill="currentColor"
-                d="M128 16a88.1 88.1 0 0 0-88 88c0 75.3 80 132.17 83.41 134.55a8 8 0 0 0 9.18 0C136 236.17 216 179.3 216 104a88.1 88.1 0 0 0-88-88m0 56a32 32 0 1 1-32 32a32 32 0 0 1 32-32"
+                d="M12 15c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4M8 9a4 4 0 0 0 4 4a4 4 0 0 0 4-4m-4.5-7c-.3 0-.5.21-.5.5v3h-1V3s-2.25.86-2.25 3.75c0 0-.75.14-.75 1.25h10c-.05-1.11-.75-1.25-.75-1.25C16.25 3.86 14 3 14 3v2.5h-1v-3c0-.29-.19-.5-.5-.5z"
               ></path>
             </svg>
             Map
