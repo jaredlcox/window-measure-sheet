@@ -1,19 +1,19 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const ProjectFeed: React.FC  = ({}) => {
+const ProjectFeed: React.FC = () => {
   const navigate = useNavigate();
 
   const handleCreateProjectClick = () => {
     navigate('/projects/new');
   };
+
   return (
-    <div className="p-4 md:p-10">
+    <div className="p-4 md:p-10 flex flex-col flex-grow max-w-full">
       {/* header container */}
-      <div className="flex justify-between items-center">
-        <div className="flex space-x-4 flex-col md:flex-row">
-          
-          <h1 className="md:text-4xl">Project Feed</h1>
+      <div className="flex justify-between items-center flex-wrap">
+        <div className="flex space-x-4 flex-col md:flex-row flex-wrap">
+          <h1 className="md:text-4xl text-2xl">Project Feed</h1>
           <label className="input input-bordered flex items-center gap-2 outline-sky-200">
             <input type="text" className="grow" placeholder="Search" />
             <svg
@@ -32,7 +32,7 @@ const ProjectFeed: React.FC  = ({}) => {
         </div>
         <button
           className="btn btn-primary text-white rounded-md md:w-auto"
-          onClick={handleCreateProjectClick} // Use the passed down function
+          onClick={handleCreateProjectClick}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -44,11 +44,13 @@ const ProjectFeed: React.FC  = ({}) => {
               d="M11 9h4v2h-4v4H9v-4H5V9h4V5h2zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20m0-2a8 8 0 1 0 0-16a8 8 0 0 0 0 16"
             ></path>
           </svg>
-          <p className="">Create Project</p>
+          <p>Create Project</p>
         </button>
       </div>
       {/* body */}
-      <div></div>
+      <div className="mt-4 flex-grow overflow-auto">
+        {/* Your project feed content goes here */}
+      </div>
     </div>
   );
 };

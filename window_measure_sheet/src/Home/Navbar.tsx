@@ -187,7 +187,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
       </div>
 
       {/* Content Area */}
-      <div className="text-2xl font-bold mt-[4rem] md:mt-0 md:ml-64 w-full">
+      <div className="flex-grow text-2xl font-bold mt-[4rem] md:mt-0 md:ml-64 overflow-x-hidden">
         {/* Pass the cloned children */}
         {clonedChildren}
       </div>
