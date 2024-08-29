@@ -137,8 +137,8 @@ const Map: React.FC = () => {
 
   return (
     <div className="h-full w-full relative">
-      <div className="flex justify-center w-full absolute top-10 z-10">
-        <label className="input input-bordered flex items-center gap-2 w-1/3">
+      <div className="flex justify-center w-full absolute top-14 xl:top-10 z-10">
+        <label className="input input-bordered flex items-center gap-2 w-1/2">
           <input
             type="text"
             className="grow"
