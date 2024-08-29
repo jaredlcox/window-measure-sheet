@@ -8,7 +8,7 @@ const ProjectFeed: React.FC  = ({}) => {
     navigate('/projects/new');
   };
   return (
-    <div className="h-[4000px] p-4 md:p-10">
+    <div className="p-4 md:p-10">
       {/* header container */}
       <div className="flex justify-between items-center">
         <div className="flex space-x-4 flex-col md:flex-row">

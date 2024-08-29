@@ -8,6 +8,8 @@ import {
 import Navbar from "./Home/Navbar";
 import ProjectFeed from "./Home/ProjectFeed";
 import NewProject from "Home/NewProject";
+import Map from "Home/Map";
+import Materials from "Home/Materials";
 
 const App: React.FC = () => {
   return (
@@ -21,19 +23,17 @@ const App: React.FC = () => {
           <Route
             path="/projects"
             element={<ProjectFeed />} // We will update this line in the Navbar
-            
           />
-                    <Route
+          <Route
             path="/projects/new"
             element={<NewProject />} // We will update this line in the Navbar
-            
           />
 
           {/* Define the /materials route */}
-          {/* <Route path="/materials" element={<Materials />} /> */}
+          <Route path="/materials" element={<Materials />} />
 
           {/* Define the /map route */}
-          {/* <Route path="/map" element={<Map />} /> */}
+          <Route path="/map" element={<Map />} />
 
           {/* You can add more routes here if needed */}
         </Routes>
