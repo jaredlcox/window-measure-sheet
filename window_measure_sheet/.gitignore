@@ -27,13 +27,9 @@ yarn-error.log*
     index.tsx       // React frontend entry point
     App.tsx         // React application component
     /server
-      /data           // Directory to store large files like GeoJSON data
-        Michigan.geojson // Your GeoJSON file
       backend.ts        // Express backend entry point
-      database.ts     // MongoDB connection setup
+      Database.ts     // MySQL connection setup
       models
-        GeoData.ts    // Mongoose schema for GeoJSON data
-      insertGeoJson.ts // Script to insert the GeoJSON data into MongoDB
   /public             // Public assets (e.g., images, fonts, etc.)
   /dist               // Compiled output directory (for backend)
   package.json        // Project dependencies and scripts
