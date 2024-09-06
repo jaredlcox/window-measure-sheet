@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ProjectCard from "./ProjectCard";
 
 const ProjectFeed: React.FC = () => {
   const navigate = useNavigate();
@@ -48,8 +49,13 @@ const ProjectFeed: React.FC = () => {
         </button>
       </div>
       {/* body */}
-      <div className="mt-4 flex-grow overflow-auto">
+      <div className="mt-4 mb-4 flex-grow overflow-auto space-y-10 py-4">
         {/* Your project feed content goes here */}
+        <ProjectCard />
+        <ProjectCard />
+        <ProjectCard />
+        <ProjectCard />
+        <ProjectCard />
       </div>
     </div>
   );
