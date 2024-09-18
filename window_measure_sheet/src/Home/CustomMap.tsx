@@ -8,7 +8,7 @@ declare global {
   }
 }
 
-const Map: React.FC = () => {
+const CustomMap: React.FC = () => {
   const [address, setAddress] = useState<string>("");
   const mapRef = useRef<google.maps.Map | null>(null);
   const autocompleteRef = useRef<HTMLInputElement | null>(null);
@@ -167,4 +167,4 @@ const Map: React.FC = () => {
   );
 };
 
-export default Map;
+export default CustomMap;

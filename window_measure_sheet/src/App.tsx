@@ -8,7 +8,7 @@ import {
 import Navbar from "./Home/Navbar";
 import ProjectFeed from "./Home/ProjectFeed";
 import NewProject from "Home/NewProject";
-import Map from "Home/Map";
+import Map from "Home/CustomMap";
 import Materials from "Home/Materials";
 
 const App: React.FC = () => {
