@@ -1,27 +1,27 @@
 {
   "compilerOptions": {
     "target": "es6",                               // Modern JS target
-    "lib": ["dom", "dom.iterable", "esnext"],      // DOM and ESNext libraries
+    "lib": ["dom", "dom.iterable", "esnext"],      // DOM and ESNext libraries for React frontend
     "allowJs": true,                               // Allow JavaScript files
-    "skipLibCheck": true,                          // Skip library checking
+    "skipLibCheck": true,                          // Skip library checking for faster builds
     "esModuleInterop": true,                       // Enable interoperability between CommonJS and ES Modules
     "allowSyntheticDefaultImports": true,          // Allow default imports from modules with no default export
     "strict": true,                                // Enable strict type-checking options
     "forceConsistentCasingInFileNames": true,      // Enforce consistent casing in file names
     "noFallthroughCasesInSwitch": true,            // Disallow fallthrough cases in switch statements
-    "module": "commonjs",                          // CommonJS modules (change to 'esnext' if only frontend)
+    "module": "commonjs",                          // CommonJS modules for Node.js (keep this for server)
     "moduleResolution": "node",                    // Resolve modules like Node.js
-    "resolveJsonModule": true,                     // Include JSON modules
-    "isolatedModules": true,                       // Treat each file as a module
+    "resolveJsonModule": true,                     // Enable importing JSON modules
+    "isolatedModules": true,                       // Treat each file as a separate module
     "noEmit": false,                               // Allow emitting of compiled files
     "outDir": "./dist",                            // Output directory for compiled files
     "jsx": "react-jsx",                            // React JSX support
     "baseUrl": "src",                              // Base URL for module resolution
     "paths": {
-      "@components/*": ["components/*"],
-      "@utils/*": ["utils/*"]
+      "@components/*": ["components/*"],           // Paths alias for components
+      "@utils/*": ["utils/*"]                      // Paths alias for utilities
     }
   },
-  "include": ["src/**/*"],                              // Include the src directory
-  "exclude": ["node_modules"]                      // Exclude the node_modules directory
+  "include": ["src/**/*"],                         // Include the src directory for both frontend and backend
+  "exclude": ["node_modules", "dist"]              // Exclude node_modules and dist folder
 }
