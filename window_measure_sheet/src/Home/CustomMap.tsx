@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
 /// <reference types="@types/googlemaps" />
 
@@ -13,6 +14,7 @@ const CustomMap: React.FC = () => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const autocompleteRef = useRef<HTMLInputElement | null>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
+  const location = useLocation();
 
   // Function to update the GeoJSON data when the polygon is edited
   const updateGeoJson = (event: any) => {
@@ -34,6 +36,8 @@ const CustomMap: React.FC = () => {
           mapTypeId: "satellite",
           tilt: 0,
           gestureHandling: "greedy",
+          disableDefaultUI:
+            location.pathname === "/projects/new" ? true : false,
           styles: [
             {
               featureType: "poi.business",
@@ -137,7 +141,11 @@ const CustomMap: React.FC = () => {
 
   return (
     <div className="h-full w-full relative">
-      <div className="flex justify-center w-full absolute top-14 xl:top-10 z-10">
+      <div
+        className={`flex justify-center w-full absolute top-14 xl:top-10 z-10 ${
+          location.pathname === "/projects/new" ? "hidden" : "flex"
+        }`}
+      >
         <label className="input input-bordered flex items-center gap-2 w-1/2">
           <input
             type="text"
