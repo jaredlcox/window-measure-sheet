@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomMap from "./CustomMap";
 import { useProjectContext } from "./ProjectContext";
@@ -24,6 +24,7 @@ const NewProject: React.FC = () => {
   const addressInputRef = useRef<HTMLInputElement | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
+  const [zoom, setZoom] = useState(15);
 
   useEffect(() => {
     if (mapRef.current === null) {
@@ -31,7 +32,7 @@ const NewProject: React.FC = () => {
         document.getElementById("map") as HTMLElement,
         {
           center: { lat: 41.819, lng: -83.654 }, // Center near the polygons
-          zoom: 15,
+          zoom: zoom,
           mapTypeId: "satellite",
           tilt: 0,
           gestureHandling: "greedy",
@@ -63,11 +64,11 @@ const NewProject: React.FC = () => {
           setAddress(place.formatted_address);
 
           // Log the latitude and longitude
-          console.log('1');
           console.log("Latitude: ", latLng.lat, "Longitude: ", latLng.lng);
 
           if (mapRef.current) {
             mapRef.current.setCenter(latLng);
+            mapRef.current.setZoom(50); // Set zoom to 50
 
             if (markerRef.current) {
               markerRef.current.setPosition(latLng);
@@ -124,9 +125,9 @@ const NewProject: React.FC = () => {
       let fullAddress = `${address}, ${city}, ${state} ${zip}`;
       await geocodeManuallyEnteredAddress(fullAddress);
     }
-
     // Now handle the form submission (e.g., send to backend)
     console.log({ projectName, address, city, state, zip });
+    setZoom(50); // Set zoom to 50 when creating the project
   };
 
   const geocodeManuallyEnteredAddress = async (address: string) => {
@@ -144,14 +145,13 @@ const NewProject: React.FC = () => {
       }
 
       const location = data.results[0].geometry.location;
-      console.log('2');
       console.log("Geocoded Latitude: ", location.lat, "Longitude: ", location.lng);
-
       const latLng = { lat: location.lat, lng: location.lng };
 
       // Center the map on the geocoded location
       if (mapRef.current) {
         mapRef.current.setCenter(latLng);
+        mapRef.current.setZoom(50); // Set zoom to 50
 
         // Set a marker on the map if not already placed
         if (!markerRef.current) {
