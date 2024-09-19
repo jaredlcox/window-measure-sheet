@@ -4,6 +4,10 @@ import CustomMap from "./CustomMap";
 import { useProjectContext } from "./ProjectContext";
 import { useLocation } from "react-router-dom";
 
+const shortenLngLtd = (num: number) => {
+  return num.toFixed(4);
+};
+
 const NewProject: React.FC = () => {
   const navigate = useNavigate();
   const {
@@ -25,6 +29,7 @@ const NewProject: React.FC = () => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
   const [zoom, setZoom] = useState(15);
+  const [latLng, setLatLng] = useState<{ lat: number, lng: number } | null>(null);
 
   useEffect(() => {
     if (mapRef.current === null) {
@@ -61,6 +66,7 @@ const NewProject: React.FC = () => {
         if (place.geometry) {
           const location = place.geometry.location;
           const latLng = { lat: location.lat(), lng: location.lng() };
+          setLatLng(latLng); // Store the latLng in state
           setAddress(place.formatted_address);
 
           // Log the latitude and longitude
@@ -126,7 +132,14 @@ const NewProject: React.FC = () => {
       await geocodeManuallyEnteredAddress(fullAddress);
     }
     // Now handle the form submission (e.g., send to backend)
-    console.log({ projectName, address, city, state, zip });
+    if (latLng) {
+      const formattedLat = shortenLngLtd(latLng.lat);
+      const formattedLng = shortenLngLtd(latLng.lng);
+      
+      console.log({ projectName, address, city, state, zip, latitude: formattedLat, longitude: formattedLng });
+    } else {
+      console.log({ projectName, address, city, state, zip });
+    }
     setZoom(50); // Set zoom to 50 when creating the project
   };
 
@@ -147,6 +160,7 @@ const NewProject: React.FC = () => {
       const location = data.results[0].geometry.location;
       console.log("Geocoded Latitude: ", location.lat, "Longitude: ", location.lng);
       const latLng = { lat: location.lat, lng: location.lng };
+      setLatLng(latLng); // Store the latLng in state
 
       // Center the map on the geocoded location
       if (mapRef.current) {
