@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import { useLocation } from "react-router-dom";
+import { useProjectContext } from "./ProjectContext";
 
 /// <reference types="@types/googlemaps" />
 
@@ -9,22 +10,16 @@ declare global {
   }
 }
 
-const CustomMap: React.FC = () => {
-  const [address, setAddress] = useState<string>("");
+const CustomMap = forwardRef((props, ref) => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const autocompleteRef = useRef<HTMLInputElement | null>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
   const location = useLocation();
+  const { address, setAddress } = useProjectContext();
 
-  // Function to update the GeoJSON data when the polygon is edited
-  const updateGeoJson = (event: any) => {
-    if (mapRef.current) {
-      mapRef.current.data.toGeoJson((geoJson: object) => {
-        console.log("Updated GeoJSON Data:", geoJson);
-        // You can send this updatedGeoJson data to your server or store it locally
-      });
-    }
-  };
+  useImperativeHandle(ref, () => ({
+    handleSearch,
+  }));
 
   useEffect(() => {
     if (mapRef.current === null) {
@@ -48,37 +43,6 @@ const CustomMap: React.FC = () => {
       );
 
       mapRef.current = map;
-
-      // Fetch the GeoJSON data dynamically
-      fetch("/Michigan.geojson")
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log("Fetched GeoJSON Data:", data); // Log the GeoJSON data to the console
-          map.data.addGeoJson(data); // Add the GeoJSON data to the map
-
-          // Make polygons editable and draggable
-          map.data.setStyle({
-            editable: true,
-            draggable: true,
-            fillColor: "#00FF00",
-            strokeWeight: 1,
-          });
-
-          // Attach event listeners to update GeoJSON when the polygon is edited
-          map.data.addListener("set_at", (event: any) => updateGeoJson(event));
-          map.data.addListener("insert_at", (event: any) =>
-            updateGeoJson(event)
-          );
-          map.data.addListener("remove_at", (event: any) =>
-            updateGeoJson(event)
-          );
-        })
-        .catch((error) => console.error("Error loading GeoJSON:", error));
     }
 
     if (autocompleteRef.current) {
@@ -96,6 +60,9 @@ const CustomMap: React.FC = () => {
           const latLng = { lat: location.lat(), lng: location.lng() };
           setAddress(place.formatted_address);
 
+          // Log the latitude and longitude
+          console.log("Latitude: ", latLng.lat, "Longitude: ", latLng.lng);
+
           if (mapRef.current) {
             mapRef.current.setCenter(latLng);
 
@@ -111,34 +78,90 @@ const CustomMap: React.FC = () => {
         }
       });
     }
-  }, []);
+  }, [location.pathname, setAddress, address]);
 
   const handleSearch = async () => {
-    if (!address) return;
-    const location = await geocodeAddress(address);
-
-    if (mapRef.current) {
-      mapRef.current.setCenter(location);
-
-      if (markerRef.current) {
-        markerRef.current.setPosition(location);
-      } else {
-        markerRef.current = new window.google.maps.Marker({
-          position: location,
-          map: mapRef.current,
-        });
+    if (autocompleteRef.current) {
+      const autocomplete = new window.google.maps.places.Autocomplete(autocompleteRef.current, {
+        types: ["geocode"],
+      });
+  
+      // Listen to the place_changed event
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+  
+        if (place.geometry) {
+          const location = place.geometry.location;
+          const latLng = { lat: location.lat(), lng: location.lng() };
+          setAddress(place.formatted_address);
+  
+          // Log the latitude and longitude
+          console.log("Latitude: ", latLng.lat, "Longitude: ", latLng.lng);
+  
+          if (mapRef.current) {
+            mapRef.current.setCenter(latLng);
+  
+            if (markerRef.current) {
+              markerRef.current.setPosition(latLng);
+            } else {
+              markerRef.current = new window.google.maps.Marker({
+                position: latLng,
+                map: mapRef.current,
+              });
+            }
+          }
+        } else {
+          // Fallback to geocoding if no geometry is available from autocomplete
+          geocodeAddress(address);
+        }
+      });
+    } else {
+      // Fallback for manually entered address (no selection from dropdown)
+      const location = await geocodeAddress(address);
+  
+      if (!location) {
+        console.error("Geocoding failed. No location found for the given address.");
+        return;
+      }
+  
+      console.log("Latitude: ", location.lat, "Longitude: ", location.lng);
+  
+      if (mapRef.current) {
+        mapRef.current.setCenter(location);
+  
+        if (markerRef.current) {
+          markerRef.current.setPosition(location);
+        } else {
+          markerRef.current = new window.google.maps.Marker({
+            position: location,
+            map: mapRef.current,
+          });
+        }
       }
     }
   };
-
+  
   const geocodeAddress = async (address: string) => {
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBGO7jQRMZ6QVPyZ5Zy8qOdzvmzdrWk--Q`
-    );
-    const data = await response.json();
-    return data.results[0].geometry.location;
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          address
+        )}&key=AIzaSyBGO7jQRMZ6QVPyZ5Zy8qOdzvmzdrWk`
+      );
+      const data = await response.json();
+  
+      if (data.results.length === 0) {
+        console.error("No results found for the given address.");
+        return null;
+      }
+  
+      return data.results[0].geometry.location;
+    } catch (error) {
+      console.error("Error fetching geocoding data:", error);
+      return null;
+    }
   };
-
+  
   return (
     <div className="h-full w-full relative">
       <div
@@ -173,6 +196,6 @@ const CustomMap: React.FC = () => {
       <div id="map" className="h-full"></div>
     </div>
   );
-};
+});
 
 export default CustomMap;

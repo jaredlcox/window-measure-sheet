@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import Avatar from "./Avatar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useProjectContext } from "./ProjectContext";
 
 interface NavbarProps {
   children: React.ReactNode;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { navbarOpen, setNavbarOpen } = useProjectContext();
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    setNavbarOpen(!navbarOpen);
   };
 
   const navigate = useNavigate();
@@ -29,7 +30,9 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
-            className="cursor-pointer w-8 rounded-full"
+            className={`cursor-pointer w-8 rounded-full ${
+              location.pathname === "/projects/new" ? "bg-[#57A9AE]" : ""
+            }`}
             onClick={() => navigate("/projects/new")}
           >
             <path
@@ -154,7 +157,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
         {/* Full-screen overlay menu */}
         <div
           className={`${
-            isOpen ? "block" : "hidden"
+            navbarOpen ? "block" : "hidden"
           } bg-gray-800 text-white h-screen w-full absolute top-0 left-0 flex flex-col items-center justify-center z-30`}
         >
           <button
