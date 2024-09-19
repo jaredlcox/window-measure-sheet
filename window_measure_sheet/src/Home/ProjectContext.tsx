@@ -11,6 +11,10 @@ interface ProjectContextProps {
   setState: (state: string) => void;
   zip: string;
   setZip: (zip: string) => void;
+  latitude: string;
+  setLatitude: (latitude: string) => void;
+  longitude: string;
+  setLongitude: (longitude: string) => void;
   resetProject: () => void;
   navbarOpen: boolean;
   setNavbarOpen: (open: boolean) => void;
@@ -32,6 +36,8 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zip, setZip] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [navbarOpen, setNavbarOpen] = useState(false);
 
   const resetProject = () => {
@@ -40,6 +46,8 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = ({ children })
     setCity("");
     setState("");
     setZip("");
+    setLatitude("");
+    setLongitude("");
   };
 
   return (
@@ -55,6 +63,10 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = ({ children })
         setState,
         zip,
         setZip,
+        latitude,
+        setLatitude,
+        longitude,
+        setLongitude,
         resetProject,
         navbarOpen,
         setNavbarOpen,

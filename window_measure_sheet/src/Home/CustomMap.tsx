@@ -172,7 +172,7 @@ const CustomMap = forwardRef((props, ref) => {
         <label className="input input-bordered flex items-center gap-2 w-1/2">
           <input
             type="text"
-            className="grow"
+            className="grow capitalize"
             placeholder="Enter an address"
             ref={autocompleteRef}
             value={address}

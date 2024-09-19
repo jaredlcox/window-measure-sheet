@@ -21,15 +21,21 @@ const NewProject: React.FC = () => {
     setState,
     zip,
     setZip,
+    latitude,
+    setLatitude,
+    longitude,
+    setLongitude,
     resetProject,
-    navbarOpen
+    navbarOpen,
   } = useProjectContext();
   const location = useLocation();
   const addressInputRef = useRef<HTMLInputElement | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
   const [zoom, setZoom] = useState(15);
-  const [latLng, setLatLng] = useState<{ lat: number, lng: number } | null>(null);
+  const [latLng, setLatLng] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
 
   useEffect(() => {
     if (mapRef.current === null) {
@@ -56,10 +62,13 @@ const NewProject: React.FC = () => {
     }
 
     if (addressInputRef.current) {
-      const autocomplete = new window.google.maps.places.Autocomplete(addressInputRef.current, {
-        types: ["geocode"],
-        componentRestrictions: { country: "us" },
-      });
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        addressInputRef.current,
+        {
+          types: ["geocode"],
+          componentRestrictions: { country: "us" },
+        }
+      );
 
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
@@ -89,25 +98,30 @@ const NewProject: React.FC = () => {
           // Populate other fields from the address_components
           const addressComponents = place.address_components;
           if (addressComponents) {
-            const streetNumber = addressComponents.find((component: { types: string[] }) =>
-              component.types.includes("street_number")
-            )?.long_name || "";
+            const streetNumber =
+              addressComponents.find((component: { types: string[] }) =>
+                component.types.includes("street_number")
+              )?.long_name || "";
 
-            const route = addressComponents.find((component: { types: string[] }) =>
-              component.types.includes("route")
-            )?.long_name || "";
+            const route =
+              addressComponents.find((component: { types: string[] }) =>
+                component.types.includes("route")
+              )?.long_name || "";
 
-            const locality = addressComponents.find((component: { types: string[] }) =>
-              component.types.includes("locality")
-            )?.long_name || "";
+            const locality =
+              addressComponents.find((component: { types: string[] }) =>
+                component.types.includes("locality")
+              )?.long_name || "";
 
-            const administrativeArea = addressComponents.find((component: { types: string[] }) =>
-              component.types.includes("administrative_area_level_1")
-            )?.short_name || "";
+            const administrativeArea =
+              addressComponents.find((component: { types: string[] }) =>
+                component.types.includes("administrative_area_level_1")
+              )?.short_name || "";
 
-            const postalCode = addressComponents.find((component: { types: string[] }) =>
-              component.types.includes("postal_code")
-            )?.long_name || "";
+            const postalCode =
+              addressComponents.find((component: { types: string[] }) =>
+                component.types.includes("postal_code")
+              )?.long_name || "";
 
             setAddress(`${streetNumber} ${route}`.trim());
             setCity(locality);
@@ -117,30 +131,11 @@ const NewProject: React.FC = () => {
         }
       });
     }
-  }, [location.pathname, setAddress]);
+  }, [location.pathname]);
 
   const handleCancelProjectClick = () => {
     resetProject();
     navigate("/projects");
-  };
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    // Trigger Geocoding API if user has manually entered the address
-    if (address) {
-      let fullAddress = `${address}, ${city}, ${state} ${zip}`;
-      await geocodeManuallyEnteredAddress(fullAddress);
-    }
-    // Now handle the form submission (e.g., send to backend)
-    if (latLng) {
-      const formattedLat = shortenLngLtd(latLng.lat);
-      const formattedLng = shortenLngLtd(latLng.lng);
-      
-      console.log({ projectName, address, city, state, zip, latitude: formattedLat, longitude: formattedLng });
-    } else {
-      console.log({ projectName, address, city, state, zip });
-    }
-    setZoom(50); // Set zoom to 50 when creating the project
   };
 
   const geocodeManuallyEnteredAddress = async (address: string) => {
@@ -154,32 +149,55 @@ const NewProject: React.FC = () => {
 
       if (data.results.length === 0) {
         console.error("No results found for the given address.");
-        return;
+        return null; // Return null if no results
       }
 
       const location = data.results[0].geometry.location;
-      console.log("Geocoded Latitude: ", location.lat, "Longitude: ", location.lng);
-      const latLng = { lat: location.lat, lng: location.lng };
-      setLatLng(latLng); // Store the latLng in state
 
       // Center the map on the geocoded location
       if (mapRef.current) {
-        mapRef.current.setCenter(latLng);
+        mapRef.current.setCenter(location);
         mapRef.current.setZoom(50); // Set zoom to 50
 
         // Set a marker on the map if not already placed
         if (!markerRef.current) {
           markerRef.current = new window.google.maps.Marker({
-            position: latLng,
+            position: location,
             map: mapRef.current,
           });
         } else {
-          markerRef.current.setPosition(latLng);
+          markerRef.current.setPosition(location);
         }
       }
+
+      return location; // Return location to the handleSubmit function
     } catch (error) {
       console.error("Geocoding failed:", error);
+      return null; // Return null in case of error
     }
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    let latLngResult = null; // Initialize with null
+
+    // Trigger Geocoding API if user has manually entered the address
+    if (address) {
+      let fullAddress = `${address}, ${city}, ${state} ${zip}`;
+      latLngResult = await geocodeManuallyEnteredAddress(fullAddress);
+    }
+
+    // Now handle the form submission (e.g., send to backend)
+    if (latLngResult) {
+      const formattedLat = shortenLngLtd(latLngResult.lat);
+      const formattedLng = shortenLngLtd(latLngResult.lng);
+      setLatitude(formattedLat);
+      setLongitude(formattedLng);
+    } else {
+      console.log({ projectName, address, city, state, zip });
+    }
+    setZoom(50); // Set zoom to 50 when creating the project
   };
 
   return (
@@ -187,8 +205,15 @@ const NewProject: React.FC = () => {
       <div className="hidden xl:flex h-full w-full">
         <CustomMap />
       </div>
-      <div className={`flex w-full h-[95%] rounded-md shadow-lg m-10 p-6 xl:w-1/3 xl:absolute xl:right-0 bg-[#FAF7F5] ${navbarOpen ? "hidden" : "flex"}`}>
-        <form className="flex h-auto w-full flex-col gap-8" onSubmit={handleSubmit}>
+      <div
+        className={`flex w-full h-[95%] rounded-md shadow-lg m-10 p-6 xl:w-1/3 xl:absolute xl:right-0 bg-[#FAF7F5] ${
+          navbarOpen ? "hidden" : "flex"
+        }`}
+      >
+        <form
+          className="flex h-auto w-full flex-col gap-8"
+          onSubmit={handleSubmit}
+        >
           <div className="flex flex-row w-full h-20 justify-between items-center">
             <h1 className="text-2xl font-bold">Create New Project</h1>
             <button
@@ -202,7 +227,7 @@ const NewProject: React.FC = () => {
           <input
             type="text"
             placeholder="Project Name"
-            className="input input-bordered w-full rounded-none"
+            className="input input-bordered w-full rounded-none capitalize"
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
             required
@@ -211,7 +236,7 @@ const NewProject: React.FC = () => {
             Address
             <input
               type="text"
-              className="grow"
+              className="grow capitalize active:bg-transparent"
               placeholder=""
               value={address}
               onChange={(e) => setAddress(e.target.value)}
@@ -223,7 +248,7 @@ const NewProject: React.FC = () => {
             City
             <input
               type="text"
-              className="grow"
+              className="grow capitalize"
               placeholder=""
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -235,7 +260,7 @@ const NewProject: React.FC = () => {
               State
               <input
                 type="text"
-                className="w-full"
+                className="w-full capitalize"
                 placeholder=""
                 value={state}
                 onChange={(e) => setState(e.target.value)}
@@ -246,7 +271,7 @@ const NewProject: React.FC = () => {
               Zip
               <input
                 type="text"
-                className="w-full"
+                className="w-full capitalize"
                 placeholder=""
                 value={zip}
                 onChange={(e) => setZip(e.target.value)}
@@ -254,7 +279,10 @@ const NewProject: React.FC = () => {
               />
             </label>
           </div>
-          <button type="submit" className="btn btn-primary text-white rounded-md md:w-auto">
+          <button
+            type="submit"
+            className="btn btn-primary text-white rounded-md md:w-auto"
+          >
             <p>Create Project</p>
           </button>
         </form>

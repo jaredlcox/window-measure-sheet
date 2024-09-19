@@ -23,7 +23,7 @@ app.get('/api/main-data', async (req, res) => {
 app.get('/api/geo-data', async (req, res) => {
   try {
     const db = await connectToGeoStateDB();
-    const [rows] = await db.execute('SELECT * FROM michigan_geojson_data WHERE id = "3"'); // Replace 'geo_states' with your actual table
+    const [rows] = await db.execute('SELECT * FROM `michigan_geojson_data` WHERE `geometry` LIKE "%41.8193%"'); // Replace 'geo_states' with your actual table
     res.json(rows);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
